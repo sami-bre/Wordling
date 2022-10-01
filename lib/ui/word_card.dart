@@ -3,9 +3,9 @@ import 'package:wordling/models/word.dart';
 
 class WordCard extends StatelessWidget {
   final Word word;
-  Function()? onDoubleTap;
+  final Function()? onDoubleTap;
 
-  WordCard({
+  const WordCard({
     required this.word,
     this.onDoubleTap,
   });
@@ -22,10 +22,10 @@ class WordCard extends StatelessWidget {
             Radius.circular(30.0),
           ),
           child: Container(
-              width: 266,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: const BorderRadius.all(
+              width: 280,
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 217, 227, 231),
+                borderRadius: BorderRadius.all(
                   Radius.circular(30.0),
                 ),
               ),

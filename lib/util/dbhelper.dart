@@ -54,4 +54,28 @@ class DbHelper {
     Word word = Word.fromMap(raw[0]);
     return word;
   }
+
+  Future<List<Word>> getAllWords() async {
+    List<Map<String, dynamic>> raw =
+        await db!.query('words', orderBy: 'id desc');
+    List<Word> words =
+        List.generate(raw.length, (index) => Word.fromMap(raw[index]));
+    return words;
+  }
+
+  Future<void> insertWord(Word word) async {
+    db!.insert(
+      'words',
+      word.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> deleteWord(Word word) async {
+    db!.delete(
+      'words',
+      where: 'id=?',
+      whereArgs: [word.id],
+    );
+  }
 }
