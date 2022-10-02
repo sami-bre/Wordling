@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:wordling/ui/word_card.dart';
+import 'package:wordling/ui/definition_card.dart';
 import 'package:wordling/util/dbhelper.dart';
-import '../models/word.dart';
+import '../models/definition.dart';
 
-class RandomWordDisplay extends StatefulWidget {
-  const RandomWordDisplay({Key? key}) : super(key: key);
+class RandomDefinitionDisplay extends StatefulWidget {
+  const RandomDefinitionDisplay({Key? key}) : super(key: key);
 
   @override
-  State<RandomWordDisplay> createState() => _RandomWordDisplayState();
+  State<RandomDefinitionDisplay> createState() =>
+      _RandomDefinitionDisplayState();
 }
 
-class _RandomWordDisplayState extends State<RandomWordDisplay> {
+class _RandomDefinitionDisplayState extends State<RandomDefinitionDisplay> {
   final DbHelper helper = DbHelper();
-  Word? word;
+  Definition? word;
 
   void showWord() async {
-    Word starter = Word(
-        term: 'starter',
+    Definition starter = Definition(
+      id: 0,
+        word: 'starter',
         definition:
             'Food items served before the main courses of a meal (prior to an entrée). Synonymous with an appetizer',
         example: 'This menu has a ton of a starters!');
-    word = await helper.getRandomWord() ?? starter;
+    word = await helper.getRandomDefinition() ?? starter;
     setState(() {
       word = word;
     });
@@ -40,7 +42,7 @@ class _RandomWordDisplayState extends State<RandomWordDisplay> {
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30),
-                child: WordCard(word: word!),
+                child: DefinitionCard(word!),
               ),
             ),
           );

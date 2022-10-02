@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:wordling/models/word.dart';
+import 'package:wordling/models/definition.dart';
 
 class DbHelper {
   final int version = 1;
@@ -17,10 +17,11 @@ class DbHelper {
 
   Future<Database> openDb() async {
     db ??= await openDatabase(
-      join(await getDatabasesPath(), 'testdat.db'),
+      join(await getDatabasesPath(), 'wordling_definitions.db'),
       onCreate: (database, version) {
+        print('creating database');
         database.execute(
-            'CREATE TABLE words (id INEGER PRIMARY KEY, term TEXT, definition TEXT, example TEXT)');
+            'CREATE TABLE definitions (id INEGER PRIMARY KEY, word TEXT, definition TEXT, example TEXT)');
       },
       version: version,
     );
@@ -30,52 +31,51 @@ class DbHelper {
   Future testDb() async {
     db = await openDb();
     await db!.execute(
-        'INSERT INTO words VALUES (5, "dedi", "bud bud", "bud bud bud")');
+        'INSERT INTO definitions VALUES (5, "dedi", "bud bud", "bud bud bud")');
     List<Map<String, dynamic>> result =
-        await db!.query('words', orderBy: 'id desc');
+        await db!.query('definitions', orderBy: 'id desc');
     print(result[0].toString());
   }
 
-  Future<Word?> getRandomWord() async {
+  Future<List<Definition>> getAllDefinitions() async {
     db = await openDb();
-    List<Map<String, dynamic>> raw = await db!.query(
-      'words',
-      orderBy: 'id desc',
-      limit: 1,
-    );
-    int lastId;
-    try {
-      lastId = raw[0]['id'];
-    } on Error {
-      return null;
-    }
-    int randomId = Random().nextInt(lastId) + 1;
-    raw = await db!.query('words', where: 'id=?', whereArgs: [randomId]);
-    Word word = Word.fromMap(raw[0]);
-    return word;
-  }
-
-  Future<List<Word>> getAllWords() async {
     List<Map<String, dynamic>> raw =
-        await db!.query('words', orderBy: 'id desc');
-    List<Word> words =
-        List.generate(raw.length, (index) => Word.fromMap(raw[index]));
-    return words;
+        await db!.query('definitions', orderBy: 'id desc');
+    List<Definition> defns =
+        List.generate(raw.length, (index) => Definition.fromMap(raw[index]));
+    return defns;
   }
 
-  Future<void> insertWord(Word word) async {
-    db!.insert(
-      'words',
-      word.toMap(),
+  Future<int> insertDefinition(Definition defn) async {
+    db = await openDb();
+    int id = await db!.insert(
+      'definitions',
+      defn.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    return id;
   }
 
-  Future<void> deleteWord(Word word) async {
+  Future<void> deleteDefinition(Definition defn) async {
+    db = await openDb();
     db!.delete(
-      'words',
+      'definitions',
       where: 'id=?',
-      whereArgs: [word.id],
+      whereArgs: [defn.id],
     );
+  }
+
+  Future<Definition?> getRandomDefinition() async {
+    db = await openDb();
+    List<Definition> defns = await getAllDefinitions();
+    if (defns.isEmpty) return null;
+    return defns[Random().nextInt(defns.length)];
+  }
+
+  Future<bool> isSaved(Definition defn) async {
+    db = await openDb();
+    List<Map<String, dynamic>> raw = await db!.query('definitions',
+        where: 'id=?', whereArgs: [defn.id], orderBy: 'id desc');
+    return raw.isNotEmpty;
   }
 }

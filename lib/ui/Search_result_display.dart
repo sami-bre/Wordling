@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/word.dart';
+import '../models/definition.dart';
 import '../util/dbhelper.dart';
 import '../util/httpHelper.dart';
-import 'word_card.dart';
+import 'definition_card.dart';
 
 class SearchResultDisplay extends StatefulWidget {
   final String searchTerm;
@@ -36,18 +36,19 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
-                List<Word> wordList = snapshot.data! as List<Word>;
+                List<Definition> defnList = snapshot.data! as List<Definition>;
                 // when the search result is empty.
-                if (wordList.isEmpty) {
+                if (defnList.isEmpty) {
                   return const Center(
                     child: Text('Nothing found.'),
                   );
                 }
-                return ListView.builder(
-                  itemCount: wordList.length,
-                  itemBuilder: (context, index) {
-                    return WordCard(word: wordList[index]);
-                  },
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for (Definition defn in defnList) DefinitionCard(defn)
+                    ],
+                  ),
                 );
               } else if (snapshot.hasError) {
                 return const Text('Network problem.');

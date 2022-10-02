@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'random_word_display.dart';
+import 'random_definition_display.dart';
 import 'Search_result_display.dart';
 
 class Front extends StatefulWidget {
@@ -12,7 +12,7 @@ class Front extends StatefulWidget {
 class _FrontState extends State<Front> {
   bool searchResultDisplayed = false;
   bool searchBarDisplayed = false;
-  Widget displayed = const RandomWordDisplay();
+  Widget displayed = const RandomDefinitionDisplay();
   // the key below gives me a reference to the state object to call update() on it.
   final GlobalKey<SearchResultDisplayState> _key = GlobalKey();
 
@@ -22,7 +22,7 @@ class _FrontState extends State<Front> {
       onWillPop: () {
         if (searchResultDisplayed) {
           setState(() {
-            displayed = const RandomWordDisplay();
+            displayed = const RandomDefinitionDisplay();
             searchResultDisplayed = false;
             searchBarDisplayed = false;
           });
@@ -77,7 +77,7 @@ class _FrontState extends State<Front> {
                   setState(() {
                     searchBarDisplayed = false;
                     searchResultDisplayed = false;
-                    displayed = const RandomWordDisplay();
+                    displayed = const RandomDefinitionDisplay();
                   });
                 },
                 icon: const Icon(

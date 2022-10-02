@@ -1,26 +1,26 @@
-class Word {
-  int? id;
-  String term;
+class Definition {
+  int id;
+  String word;
   String definition;
   String example;
 
-  Word({
-    this.id,
-    required this.term,
+  Definition({
+    required this.id,
+    required this.word,
     required this.definition,
     required this.example,
   });
 
-  Word.fromMap(Map<String, dynamic> map)
+  Definition.fromMap(Map<String, dynamic> map)
       : id = map['id'],
-        term = map['term'],
+        word = map['word'],
         definition = map['definition'],
         example = map['example'];
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'term': term,
+      'word': word,
       'definition': definition,
       'example': example,
     };
