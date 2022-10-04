@@ -61,8 +61,7 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
               return const Center(
                 child: SizedBox(
                   width: 60,
-                  height: 60,
-                  child: CircularProgressIndicator(),
+                  child: LinearProgressIndicator(),
                 ),
               );
             }

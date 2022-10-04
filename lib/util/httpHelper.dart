@@ -18,6 +18,7 @@ class HttpHelper {
       word: e['word'],
       definition: e['definition'],
       example: e['example'],
+      origin: Origin.downloaded,
     )).toList();
   }
 }

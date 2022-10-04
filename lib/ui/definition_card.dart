@@ -76,42 +76,52 @@ class _DefinitionCardState extends State<DefinitionCard> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      'word',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                    Text(
-                      definition.word,
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    const SizedBox(
-                      height: 30.0,
-                    ),
-                    Text(
-                      'definition',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(
-                      definition.definition,
-                      textScaleFactor: 1.1,
-                    ),
-                    const SizedBox(
-                      height: 30.0,
-                    ),
-                    Text(
-                      'example',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(
-                      definition.example,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    )
+                    if (definition.word != '')
+                      Text(
+                        'word',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    if (definition.word != '')
+                      Text(
+                        definition.word,
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                    if (definition.definition != '')
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                    if (definition.definition != '')
+                      Text(
+                        'definition',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    if (definition.definition != '')
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                    if (definition.definition != '')
+                      Text(
+                        definition.definition,
+                        textScaleFactor: 1.1,
+                      ),
+                    if (definition.example != '')
+                      const SizedBox(
+                        height: 30.0,
+                      ),
+                    if (definition.example != '')
+                      Text(
+                        'example',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    if (definition.example != '')
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                    if (definition.example != '')
+                      Text(
+                        definition.example,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      )
                   ],
                 ),
               )),

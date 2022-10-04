@@ -21,7 +21,7 @@ class DbHelper {
       onCreate: (database, version) {
         print('creating database');
         database.execute(
-            'CREATE TABLE definitions (id INEGER PRIMARY KEY, word TEXT, definition TEXT, example TEXT)');
+            'CREATE TABLE definitions (id INEGER NOT NULL, word TEXT, definition TEXT, example TEXT, origin TEXTNOT NULL, PRIMARY KEY (id, origin))');
       },
       version: version,
     );
@@ -31,7 +31,7 @@ class DbHelper {
   Future testDb() async {
     db = await openDb();
     await db!.execute(
-        'INSERT INTO definitions VALUES (5, "dedi", "bud bud", "bud bud bud")');
+        'INSERT INTO definitions VALUES (5, "dedi", "bud bud", "bud bud bud", "${Origin.created.name}")');
     List<Map<String, dynamic>> result =
         await db!.query('definitions', orderBy: 'id desc');
     print(result[0].toString());
@@ -60,8 +60,8 @@ class DbHelper {
     db = await openDb();
     db!.delete(
       'definitions',
-      where: 'id=?',
-      whereArgs: [defn.id],
+      where: 'id=? and origin=?',
+      whereArgs: [defn.id, defn.origin.name],
     );
   }
 
@@ -75,7 +75,18 @@ class DbHelper {
   Future<bool> isSaved(Definition defn) async {
     db = await openDb();
     List<Map<String, dynamic>> raw = await db!.query('definitions',
-        where: 'id=?', whereArgs: [defn.id], orderBy: 'id desc');
+        where: 'id=? and origin=?', whereArgs: [defn.id, defn.origin.name]);
     return raw.isNotEmpty;
+  }
+
+  Future<int> getNextCreatedDefinitionId() async {
+    db = await openDb();
+    List<Map<String, dynamic>> raw = await db!.query('definitions',
+        where: 'origin=?',
+        whereArgs: [Origin.created.name],
+        orderBy: 'id desc',
+        limit: 1);
+    if (raw.isEmpty) return 1;
+    return raw[0]['id'] + 1;
   }
 }

@@ -88,9 +88,23 @@ class _FrontState extends State<Front> {
           ],
         ),
         body: displayed,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: const Icon(Icons.card_membership),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: 'playButton',
+              onPressed: () {},
+              child: const Icon(Icons.play_lesson_outlined),
+            ),
+            const SizedBox(
+              width: 16
+            ),
+            FloatingActionButton(
+              heroTag: 'myCardsButton',
+              onPressed: () => Navigator.pushNamed(context, '/saved'),
+              child: const Icon(Icons.card_membership),
+            )
+          ],
         ),
       ),
     );

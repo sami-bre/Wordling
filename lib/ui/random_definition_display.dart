@@ -18,10 +18,12 @@ class _RandomDefinitionDisplayState extends State<RandomDefinitionDisplay> {
   void showWord() async {
     Definition starter = Definition(
       id: 0,
-        word: 'starter',
-        definition:
-            'Food items served before the main courses of a meal (prior to an entrée). Synonymous with an appetizer',
-        example: 'This menu has a ton of a starters!');
+      word: 'starter',
+      definition:
+          'Food items served before the main courses of a meal (prior to an entrée). Synonymous with an appetizer',
+      example: 'This menu has a ton of a starters!',
+      origin: Origin.created
+    );
     word = await helper.getRandomDefinition() ?? starter;
     setState(() {
       word = word;
