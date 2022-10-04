@@ -8,10 +8,10 @@ class RandomDefinitionDisplay extends StatefulWidget {
 
   @override
   State<RandomDefinitionDisplay> createState() =>
-      _RandomDefinitionDisplayState();
+      RandomDefinitionDisplayState();
 }
 
-class _RandomDefinitionDisplayState extends State<RandomDefinitionDisplay> {
+class RandomDefinitionDisplayState extends State<RandomDefinitionDisplay> {
   final DbHelper helper = DbHelper();
   Definition? word;
 

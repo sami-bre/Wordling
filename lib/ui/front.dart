@@ -12,9 +12,16 @@ class Front extends StatefulWidget {
 class _FrontState extends State<Front> {
   bool searchResultDisplayed = false;
   bool searchBarDisplayed = false;
-  Widget displayed = const RandomDefinitionDisplay();
+  final Widget randDefDisplay = const RandomDefinitionDisplay();
+  late Widget displayed;
   // the key below gives me a reference to the state object to call update() on it.
   final GlobalKey<SearchResultDisplayState> _key = GlobalKey();
+
+  @override
+  void initState() {
+    displayed = randDefDisplay;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +29,7 @@ class _FrontState extends State<Front> {
       onWillPop: () {
         if (searchResultDisplayed) {
           setState(() {
-            displayed = const RandomDefinitionDisplay();
+            displayed = randDefDisplay;
             searchResultDisplayed = false;
             searchBarDisplayed = false;
           });
@@ -77,7 +84,7 @@ class _FrontState extends State<Front> {
                   setState(() {
                     searchBarDisplayed = false;
                     searchResultDisplayed = false;
-                    displayed = const RandomDefinitionDisplay();
+                    displayed = randDefDisplay;
                   });
                 },
                 icon: const Icon(
@@ -96,9 +103,7 @@ class _FrontState extends State<Front> {
               onPressed: () {},
               child: const Icon(Icons.play_lesson_outlined),
             ),
-            const SizedBox(
-              width: 16
-            ),
+            const SizedBox(width: 16),
             FloatingActionButton(
               heroTag: 'myCardsButton',
               onPressed: () => Navigator.pushNamed(context, '/saved'),

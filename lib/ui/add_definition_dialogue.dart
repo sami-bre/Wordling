@@ -26,6 +26,7 @@ class AddDefinitionDialog {
     }
 
     return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       scrollable: true,
       title: Text(isNew ? 'New definition' : 'Edit definition'),
       content: Column(
@@ -40,6 +41,8 @@ class AddDefinitionDialog {
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
+              minLines: 3,
+              maxLines: 6,
               controller: txtDefinition,
               decoration: const InputDecoration(label: Text('Definition')),
             ),
@@ -47,6 +50,8 @@ class AddDefinitionDialog {
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
+              minLines: 2,
+              maxLines: 4,
               controller: txtExample,
               decoration: const InputDecoration(label: Text('Example')),
             ),
@@ -70,6 +75,9 @@ class AddDefinitionDialog {
           },
           child: const Text('Save'),
         ),
+        const SizedBox(
+          width: 10,
+        )
       ],
     );
   }

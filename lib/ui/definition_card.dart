@@ -4,25 +4,29 @@ import '../util/dbhelper.dart';
 
 class DefinitionCard extends StatefulWidget {
   final Definition definition;
+  final Function(bool isBeingSaved)? onSerialize;
 
   // ignore: use_key_in_widget_constructors
-  const DefinitionCard(this.definition);
+  const DefinitionCard(this.definition, {this.onSerialize});
 
   @override
   _DefinitionCardState createState() =>
       // ignore: no_logic_in_create_state
-      _DefinitionCardState(definition: definition);
+      _DefinitionCardState(definition: definition, onSerialize: onSerialize);
 }
 
 class _DefinitionCardState extends State<DefinitionCard> {
   DbHelper helper = DbHelper();
   final Definition definition;
+  final Function(bool)?
+      onSerialize; // a function to do sth in addition to saving/deleting uopn double click.
   bool isSaved = false;
   final Color savedColor = const Color.fromARGB(255, 142, 183, 255);
   final Color unsavedColor = const Color.fromARGB(255, 217, 227, 231);
 
   _DefinitionCardState({
     required this.definition,
+    this.onSerialize,
   });
 
   @override
@@ -55,6 +59,9 @@ class _DefinitionCardState extends State<DefinitionCard> {
               isSaved = false;
             });
           }
+          // if we are given the onSerialize function, we call it
+          // here after saving/deleting the definition from the database.
+          if (onSerialize != null) onSerialize!(isSaved);
         },
         child: Material(
           elevation: 3.0,

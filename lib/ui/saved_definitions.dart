@@ -101,7 +101,16 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                           scrollable: true,
                           backgroundColor: Colors.transparent,
                           contentPadding: const EdgeInsets.all(0),
-                          content: DefinitionCard(current),
+                          content: DefinitionCard(
+                            current,
+                            onSerialize: (isBeingSaved) {
+                              setState(() {
+                                isBeingSaved
+                                    ? definitions.add(current)
+                                    : definitions.remove(current);
+                              });
+                            },
+                          ),
                         ),
                       );
                     },
