@@ -20,16 +20,9 @@ class LocalSearchEngine {
       Definition firstDefn, Definition secondDefn, String searchTerm) {
     int firstValue = 0;
     int secondValue = 0;
-    // compering the searchTerm with the word of the definition. it has higher value.
-    firstValue +=
-        10 * lcss(firstDefn.word, searchTerm); // this value is multiplied by 10
-    secondValue += 10 * lcss(secondDefn.word, searchTerm); // this one too
-    // now compare the search term with the definitions
-    firstValue += lcss(firstDefn.definition, searchTerm);
-    secondValue += lcss(secondDefn.definition, searchTerm);
-    // now do it with the examples
-    firstValue += lcss(firstDefn.example, searchTerm);
-    secondValue += lcss(secondDefn.example, searchTerm);
+    // compering the searchTerm with the word of the definition.
+    firstValue += 10 * lcss(firstDefn.word, searchTerm);
+    secondValue += 10 * lcss(secondDefn.word, searchTerm);
     // finally return the comparison result
     return secondValue.compareTo(firstValue);
   }
