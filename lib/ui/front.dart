@@ -100,7 +100,7 @@ class _FrontState extends State<Front> {
           children: [
             FloatingActionButton(
               heroTag: 'playButton',
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(context, '/study'),
               child: const Icon(Icons.play_lesson_outlined),
             ),
             const SizedBox(width: 16),
