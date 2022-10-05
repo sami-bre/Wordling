@@ -4,6 +4,7 @@ import 'package:wordling/ui/definition_card.dart';
 
 import '../models/definition.dart';
 import '../util/dbhelper.dart';
+import '../util/local_search_engine.dart';
 
 class SavedDefinitions extends StatefulWidget {
   const SavedDefinitions({Key? key}) : super(key: key);
@@ -15,15 +16,23 @@ class SavedDefinitions extends StatefulWidget {
 class _SavedDefinitionsState extends State<SavedDefinitions> {
   DbHelper helper = DbHelper();
   List<Definition> definitions = [];
+  bool searchBarDisplayed = false;
 
   @override
   void initState() {
-    showDefinitions();
+    showAllDefinitions();
     super.initState();
   }
 
-  void showDefinitions() async {
+  void showAllDefinitions() async {
     definitions = await helper.getAllDefinitions();
+    setState(() {
+      definitions = definitions;
+    });
+  }
+
+  void showSearchResults(String searchTerm) async {
+    definitions = await LocalSearchEngine.localSearch(searchTerm);
     setState(() {
       definitions = definitions;
     });
@@ -33,7 +42,53 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My cards'),
+        title: searchBarDisplayed
+            ? TextField(
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) {
+                  showSearchResults(value);
+                },
+                autofocus: true,
+                style: const TextStyle(
+                  color: Color(0xffCFD8DC),
+                  fontSize: 22,
+                ),
+                decoration: const InputDecoration(
+                  label: Text(
+                    'Search my cards',
+                    style: TextStyle(color: Color(0xffCFD8DC)),
+                  ),
+                ),
+              )
+            : const Text("My cards"),
+        backgroundColor: const Color.fromARGB(255, 72, 72, 72),
+        foregroundColor: const Color(0xffCFD8DC),
+        centerTitle: true,
+        actions: [
+          if (!searchBarDisplayed)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  searchBarDisplayed = true;
+                });
+              },
+              icon: const Icon(Icons.search),
+            ),
+          if (searchBarDisplayed)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  searchBarDisplayed = false;
+                  // update the definitions list so it contains all of them
+                  showAllDefinitions();
+                });
+              },
+              icon: const Icon(
+                Icons.cancel_outlined,
+                size: 30,
+              ),
+            ),
+        ],
       ),
       body: Center(
         child: ListView.builder(
@@ -161,7 +216,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
               onPressed: () {
                 helper
                     .insertDefinition(defn)
-                    .then((value) => showDefinitions());
+                    .then((value) => showAllDefinitions());
               },
               label: const Text('Undo'),
               icon: const Icon(Icons.undo_rounded),
