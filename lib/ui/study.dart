@@ -77,7 +77,6 @@ class _StudyState extends State<Study> {
                 });
               }
             },
-            // backgroundColor: const Color.fromARGB(255, 109, 109, 109),
             child: const Icon(Icons.arrow_back_ios_rounded),
           ),
           const SizedBox(width: 30),
@@ -94,7 +93,6 @@ class _StudyState extends State<Study> {
                 });
               }
             },
-            // backgroundColor: const Color.fromARGB(255, 109, 109, 109),
             child: const Icon(Icons.arrow_forward_ios_rounded),
           ),
         ],

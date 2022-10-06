@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wordling/models/definition.dart';
 import '../util/dbhelper.dart';
+import 'package:get/get.dart';
 
 class DefinitionCard extends StatefulWidget {
   final Definition definition;
@@ -24,8 +25,6 @@ class DefinitionCard extends StatefulWidget {
 class DefinitionCardState extends State<DefinitionCard> {
   DbHelper helper = DbHelper();
   bool isSaved = false;
-  final Color savedColor = const Color.fromARGB(255, 142, 183, 255);
-  final Color unsavedColor = const Color.fromARGB(255, 217, 227, 231);
 
   DefinitionCardState();
 
@@ -42,6 +41,17 @@ class DefinitionCardState extends State<DefinitionCard> {
 
   @override
   Widget build(BuildContext context) {
+    // set the correct collors. these colors are theme independent (unlike the other colors in the app)
+    Color savedColor;
+    Color unsavedColor;
+    bool isDark = Get.isDarkMode;
+    if (!isDark) {
+      savedColor = const Color.fromARGB(255, 142, 183, 255);
+      unsavedColor = const Color.fromARGB(255, 217, 227, 231);
+    } else {
+      savedColor = const Color.fromARGB(255, 25, 67, 95);
+      unsavedColor = const Color.fromARGB(255, 70, 70, 70);
+    }
     // the style of the word text depends on whether this is a front
     TextStyle wordTextStyle;
     TextStyle wordLabelStyle;
@@ -82,7 +92,8 @@ class DefinitionCardState extends State<DefinitionCard> {
             Radius.circular(30.0),
           ),
           child: Container(
-              width: 280,
+            // the width of a card should be .8 * the screen width.
+              width: MediaQuery.of(context).size.shortestSide * 0.8,
               decoration: BoxDecoration(
                 color: isSaved ? savedColor : unsavedColor,
                 borderRadius: const BorderRadius.all(

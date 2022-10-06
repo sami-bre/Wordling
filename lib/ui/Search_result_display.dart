@@ -30,7 +30,9 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
   Widget build(BuildContext context) {
     return Center(
       child: SizedBox(
-        width: 280,
+        // here too, the results display (and thus the cards) should
+        // be 0.8 times the screen width.
+        width: MediaQuery.of(context).size.shortestSide * 0.8,
         child: FutureBuilder(
           future: HttpHelper.search(searchTerm),
           builder: (context, snapshot) {

@@ -21,7 +21,6 @@ class AddDefinitionDialog {
       // the the next available id for the definition.
       helper.getNextCreatedDefinitionId().then((value) {
         defn.id = value;
-        print(defn.id);
       });
     }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:wordling/main.dart';
 import 'random_definition_display.dart';
 import 'Search_result_display.dart';
+import 'package:get/get.dart';
 
 class Front extends StatefulWidget {
   const Front({Key? key}) : super(key: key);
@@ -39,6 +41,16 @@ class _FrontState extends State<Front> {
       },
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              icon: Get.isDarkMode
+                  ? const Icon(Icons.wb_sunny_rounded)
+                  : const Icon(Icons.nightlight_rounded),
+              onPressed: () {
+                Get.isDarkMode
+                    ? Get.changeThemeMode(ThemeMode.light)
+                    : Get.changeThemeMode(ThemeMode.dark);
+                setState(() {});
+              }),
           title: searchBarDisplayed
               ? TextField(
                   textInputAction: TextInputAction.search,
@@ -99,16 +111,18 @@ class _FrontState extends State<Front> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             FloatingActionButton(
+              // backgroundColor: Get.isDarkMode ? darkHeroColor : lightHeroColor,
               heroTag: 'playButton',
               onPressed: () => Navigator.pushNamed(context, '/study'),
               child: const Icon(Icons.play_lesson_outlined),
             ),
             const SizedBox(width: 16),
             FloatingActionButton(
+              // backgroundColor: Get.isDarkMode ? darkHeroColor : lightHeroColor,
               heroTag: 'myCardsButton',
               onPressed: () => Navigator.pushNamed(context, '/saved'),
               child: const Icon(Icons.card_membership),
-            )
+            ),
           ],
         ),
       ),

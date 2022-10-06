@@ -158,6 +158,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                         context: context,
                         builder: (context) => AlertDialog(
                           scrollable: true,
+                          // this transparent color is theme independent.
                           backgroundColor: Colors.transparent,
                           contentPadding: const EdgeInsets.all(0),
                           content: DefinitionCard(
