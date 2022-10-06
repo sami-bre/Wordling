@@ -6,67 +6,52 @@ https://www.freshcardsapp.com/srs/write-your-own-algorithm.html
 */
 
 import 'dart:math';
-
-class SRSState {
-  int n; // this is the number of successful recalls in a row.
-  double
-      eFactor; // this is the measure of the easiness to recall a card (from 1.3 to 2.5)
-  double
-      interval; // this is the amount of days that would pass before the next study.
-
-  SRSState({
-    required this.n,
-    required this.eFactor,
-    required this.interval,
-  });
-}
-
-class Evaluation {
-  int score; // this is the easy of recall for one session (from 1 - 5) 1 and 2 are considered failure.
-  double
-      lateness; // this is the amount of days passed between the scheduled and actual study times.
-
-  Evaluation({
-    required this.score,
-    required this.lateness,
-  });
-}
+import 'package:wordling/models/definition.dart';
 
 class SRS {
   // the Spaced Repitition System class
 // the spaced repitition system function.
-  static SRSState srsFunction(SRSState? previousState, Evaluation evaluation) {
-    // this function takes the state from a previous study and evaluation for the current study
-    // and returns the state for the cuurent study.
-    // if this is the first time a card is examined, it wouldn't have a previousState. so we make one.
-    previousState ??= SRSState(n: 0, eFactor: 2.2, interval: 0);
-    // now let's make the state
+  static Definition srsFunction(Definition previousState, int score) {
+    // this function takes a definition with an old state from a previous study
+    //and evaluationscore for the current study and returns the state for the
+    // curent study.
+    // if this is the first time a card is examined, the lastStudyTime (and eFactor and n and interval)
+    // are null. so let's set default values.
+    if (previousState.lastStudyTime == null) {
+      previousState.n = 0;
+      previousState.eFactor = 2.2;
+      previousState.interval = 0;
+    }
+    // now let's make the definition have a new state.
     int n;
     double eFactor, interval;
 
     eFactor = max(
         1.3,
-        previousState.eFactor +
-            (0.1 -
-                (5 - evaluation.score) *
-                    (0.08 + (5 - evaluation.score) * 0.02)));
+        previousState.eFactor! +
+            (0.1 - (5 - score) * (0.08 + (5 - score) * 0.02)));
 
-    if (evaluation.score < 3) {
+    if (score < 3) {
       // this is failure.
       n = 0;
-      interval = 1;
+      interval = 1 * 86400000;
     } else {
-      n = previousState.n + 1;
-
+      n = previousState.n! + 1;
       if (previousState.n == 0) {
-        interval = 1;
+        interval = 1 * 86400000;
       } else if (previousState.n == 1) {
-        interval = 4;
+        interval = 4 * 86400000;
       } else {
-        interval = (previousState.interval * eFactor).ceilToDouble();
+        interval = (previousState.intervalInDays! * eFactor).ceilToDouble();
+        interval *= 86400000; // converting the interval back to milliseconds.
       }
     }
-    // finally, build and return the new state
-    return SRSState(n: n, eFactor: eFactor, interval: interval);
+    // finally, set the new values into the definition and return it.
+    Definition newState = previousState;
+    newState.n = n;
+    newState.eFactor = eFactor;
+    newState.interval = interval;
+    newState.lastStudyTime = DateTime.now().millisecondsSinceEpoch.toDouble();
+    return newState;
   }
 }

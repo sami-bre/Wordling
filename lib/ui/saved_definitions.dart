@@ -135,6 +135,10 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                               definition: current.definition,
                               example: current.example,
                               origin: current.origin,
+                              n: current.n,
+                              eFactor: current.eFactor,
+                              interval: current.interval,
+                              lastStudyTime: current.lastStudyTime,
                             ),
                             isNew: false,
                           ),
@@ -206,6 +210,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
 
   SnackBar _buildDeleteSnackBar(Definition defn) {
     return SnackBar(
+      duration: const Duration(milliseconds: 1500),
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(

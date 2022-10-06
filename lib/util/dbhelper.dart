@@ -20,8 +20,17 @@ class DbHelper {
       join(await getDatabasesPath(), 'wordling_definitions.db'),
       onCreate: (database, version) {
         print('creating database');
-        database.execute(
-            'CREATE TABLE definitions (id INEGER NOT NULL, word TEXT, definition TEXT, example TEXT, origin TEXTNOT NULL, PRIMARY KEY (id, origin))');
+        database.execute('CREATE TABLE definitions ('
+            'id INEGER NOT NULL, '
+            'word TEXT, '
+            'definition TEXT, '
+            'example TEXT, '
+            'origin TEXT NOT NULL, '
+            'n INTEGER, '
+            'eFactor REAL, '
+            'interval REAL, '
+            'lastStudyTime REAL, '
+            'PRIMARY KEY (id, origin))');
       },
       version: version,
     );
@@ -30,11 +39,12 @@ class DbHelper {
 
   Future testDb() async {
     db = await openDb();
-    await db!.execute(
-        'INSERT INTO definitions VALUES (5, "dedi", "bud bud", "bud bud bud", "${Origin.created.name}")');
-    List<Map<String, dynamic>> result =
-        await db!.query('definitions', orderBy: 'id desc');
-    print(result[0].toString());
+    // await db!.execute(
+    //     'INSERT INTO definitions VALUES (5, "dedi", "bud bud", "bud bud bud", "${Origin.created.name}")');
+    List<Map<String, dynamic>> result = await db!.query('definitions');
+    result.forEach((element) {
+      print(element);
+    });
   }
 
   Future<List<Definition>> getAllDefinitions() async {
@@ -44,6 +54,19 @@ class DbHelper {
     List<Definition> defns =
         List.generate(raw.length, (index) => Definition.fromMap(raw[index]));
     return defns;
+  }
+
+  Future<List<Definition>> getDueDefinitions() async {
+    db = await openDb();
+    int now = DateTime.now().millisecondsSinceEpoch;
+    List<Map<String, dynamic>> raw = await db!.query(
+      'definitions',
+      where: 'lastStudyTime IS NULL OR (lastStudyTime + interval) <= ?',
+      whereArgs: [now],
+    );
+    List<Definition> dueDefns =
+        List.generate(raw.length, (index) => Definition.fromMap(raw[index]));
+    return dueDefns;
   }
 
   Future<int> insertDefinition(Definition defn) async {

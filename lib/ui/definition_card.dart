@@ -4,11 +4,12 @@ import '../util/dbhelper.dart';
 
 class DefinitionCard extends StatefulWidget {
   final Definition definition;
-  final bool isFront; // if isFront, the card only shows the word.
+  bool isFront; // if isFront, the card only shows the word.
   final bool isIdle; // if idle, the card won't respond to a double tap
-  final Function(bool isBeingSaved)? onSerialize;
+  final Function(bool isBeingSaved)?
+      onSerialize; // a function to do sth in addition to saving/deleting uopn double click.
 
-  const DefinitionCard(
+  DefinitionCard(
     this.definition, {
     this.isFront = false,
     this.isIdle = false,
@@ -17,36 +18,20 @@ class DefinitionCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  DefinitionCardState createState() =>
-      // ignore: no_logic_in_create_state
-      DefinitionCardState(
-          definition: definition,
-          isFront: isFront,
-          isIdle: isIdle,
-          onSerialize: onSerialize);
+  DefinitionCardState createState() => DefinitionCardState();
 }
 
 class DefinitionCardState extends State<DefinitionCard> {
   DbHelper helper = DbHelper();
-  final Definition definition;
-  bool isFront;
-  bool isIdle;
-  final Function(bool)?
-      onSerialize; // a function to do sth in addition to saving/deleting uopn double click.
   bool isSaved = false;
   final Color savedColor = const Color.fromARGB(255, 142, 183, 255);
   final Color unsavedColor = const Color.fromARGB(255, 217, 227, 231);
 
-  DefinitionCardState({
-    required this.definition,
-    required this.isFront,
-    required this.isIdle,
-    this.onSerialize,
-  });
+  DefinitionCardState();
 
   @override
   void initState() {
-    helper.isSaved(definition).then((value) {
+    helper.isSaved(widget.definition).then((value) {
       setState(() {
         isSaved = value;
       });
@@ -60,7 +45,7 @@ class DefinitionCardState extends State<DefinitionCard> {
     // the style of the word text depends on whether this is a front
     TextStyle wordTextStyle;
     TextStyle wordLabelStyle;
-    if (isFront) {
+    if (widget.isFront) {
       wordTextStyle = Theme.of(context).textTheme.displaySmall!;
       wordLabelStyle = Theme.of(context).textTheme.labelLarge!;
     } else {
@@ -70,26 +55,26 @@ class DefinitionCardState extends State<DefinitionCard> {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16.0),
       child: GestureDetector(
-        onDoubleTap: isIdle
+        onDoubleTap: widget.isIdle
             ? null
             : () {
                 // act upon double tap only if the card is not idle.
                 if (!isSaved) {
                   // the word is not saved so save it.
-                  helper.insertDefinition(definition);
+                  helper.insertDefinition(widget.definition);
                   setState(() {
                     isSaved = true;
                   });
                 } else {
                   // the word is saved so delete it.
-                  helper.deleteDefinition(definition);
+                  helper.deleteDefinition(widget.definition);
                   setState(() {
                     isSaved = false;
                   });
                 }
                 // if we are given the onSerialize function, we call it
                 // here after saving/deleting the definition from the database.
-                if (onSerialize != null) onSerialize!(isSaved);
+                if (widget.onSerialize != null) widget.onSerialize!(isSaved);
               },
         child: Material(
           elevation: 3.0,
@@ -114,47 +99,47 @@ class DefinitionCardState extends State<DefinitionCard> {
                     Text(
                       'word',
                       style: wordLabelStyle,
-                      textAlign: isFront ? TextAlign.center : null,
+                      textAlign: widget.isFront ? TextAlign.center : null,
                     ),
                     Text(
-                      definition.word,
+                      widget.definition.word,
                       style: wordTextStyle,
-                      textAlign: isFront ? TextAlign.center : null,
+                      textAlign: widget.isFront ? TextAlign.center : null,
                     ),
-                    if (definition.definition != '' && !isFront)
+                    if (!widget.isFront)
                       const SizedBox(
-                        height: 30.0,
+                        height: 36.0,
                       ),
-                    if (definition.definition != '' && !isFront)
+                    if (widget.definition.definition != '' && !widget.isFront)
                       Text(
                         'definition',
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
-                    if (definition.definition != '' && !isFront)
+                    if (widget.definition.definition != '' && !widget.isFront)
                       const SizedBox(
                         height: 10.0,
                       ),
-                    if (definition.definition != '' && !isFront)
+                    if (widget.definition.definition != '' && !widget.isFront)
                       Text(
-                        definition.definition,
+                        widget.definition.definition,
                         textScaleFactor: 1.1,
                       ),
-                    if (definition.example != '' && !isFront)
+                    if (widget.definition.example != '' && !widget.isFront)
                       const SizedBox(
                         height: 30.0,
                       ),
-                    if (definition.example != '' && !isFront)
+                    if (widget.definition.example != '' && !widget.isFront)
                       Text(
                         'example',
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
-                    if (definition.example != '' && !isFront)
+                    if (widget.definition.example != '' && !widget.isFront)
                       const SizedBox(
                         height: 10.0,
                       ),
-                    if (definition.example != '' && !isFront)
+                    if (widget.definition.example != '' && !widget.isFront)
                       Text(
-                        definition.example,
+                        widget.definition.example,
                         style: Theme.of(context).textTheme.bodyLarge,
                       )
                   ],
@@ -167,7 +152,7 @@ class DefinitionCardState extends State<DefinitionCard> {
 
   toggleFront() {
     setState(() {
-      isFront = !isFront;
+      widget.isFront = !widget.isFront;
     });
   }
 }
