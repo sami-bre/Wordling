@@ -1,8 +1,9 @@
 import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wordling/ui/definition_card.dart';
+import 'package:wordling/ui/helper_dialog.dart';
 import 'package:wordling/util/dbhelper.dart';
 import '../models/definition.dart';
 import '../SRS/srs.dart';
@@ -42,8 +43,24 @@ class _StudyState extends State<Study> {
     });
   }
 
+  void checkAndShowHelp(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    print('in check and display help');
+    bool? studyHelp = prefs.getBool('studyHelp');
+    print('studyHelp in prefs is : $studyHelp');
+    if (studyHelp == null || studyHelp) {
+      showDialog(
+        context: context,
+        builder: (context) => HelperDialog.buildStudyPageHelpDialog(context),
+      );
+      prefs.setBool('studyHelp', false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // check and show help
+    checkAndShowHelp(context);
     return Scaffold(
       appBar: AppBar(
         title: Row(

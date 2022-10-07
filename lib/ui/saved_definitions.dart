@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wordling/ui/add_definition_dialogue.dart';
 import 'package:wordling/ui/definition_card.dart';
+import 'package:wordling/ui/helper_dialog.dart';
 
 import '../models/definition.dart';
 import '../util/dbhelper.dart';
@@ -38,8 +40,22 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
     });
   }
 
+  void checkAndShowHelp(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    bool? myCardsHelp = prefs.getBool('myCardsHelp');
+    if (myCardsHelp == null || myCardsHelp) {
+      showDialog(
+        context: context,
+        builder: (context) => HelperDialog.buildMyCardsPageHelpDialog(context),
+      );
+      prefs.setBool('myCardsHelp', false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // check and display help for the page
+    checkAndShowHelp(context);
     return Scaffold(
       appBar: AppBar(
         title: searchBarDisplayed
