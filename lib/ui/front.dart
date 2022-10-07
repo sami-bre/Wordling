@@ -126,7 +126,16 @@ class _FrontState extends State<Front> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             const Expanded(child: SizedBox()),
-            TextButton(
+            ElevatedButton(
+              style:
+                  ButtonStyle(shape: MaterialStateProperty.all(const CircleBorder())),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.message_rounded,
+                  size: 20,
+                ),
+              ),
               onPressed: () {
                 showDialog(
                   context: context,
@@ -149,7 +158,6 @@ class _FrontState extends State<Front> {
                   }
                 });
               },
-              child: const Text('About'),
             ),
             const Expanded(flex: 3, child: SizedBox()),
             FloatingActionButton(
