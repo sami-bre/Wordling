@@ -127,8 +127,9 @@ class _FrontState extends State<Front> {
           children: [
             const Expanded(child: SizedBox()),
             ElevatedButton(
-              style:
-                  ButtonStyle(shape: MaterialStateProperty.all(const CircleBorder())),
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(const CircleBorder()),
+              ),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Icon(
@@ -241,7 +242,7 @@ class _FrontState extends State<Front> {
           ),
           const SizedBox(height: 20),
           const Text(
-              'For bug reports, comments or Proposals for future projects, '
+              'For bug reports, comments or proposals for future projects, '
               'write to me via telegram or email.'),
         ],
       ),
