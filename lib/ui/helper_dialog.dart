@@ -17,7 +17,7 @@ class HelperDialog {
           SizedBox(height: 20),
           Text(
               'You can double tap on a card anywhere in the app to save or delete it. '
-              'Saved cards have bright colors wheras unsaved ones are cold.')
+              'Saved cards have bright colors whereas unsaved ones are cold.')
         ],
       ),
     );
