@@ -88,10 +88,12 @@ class _StudyState extends State<Study> {
                 // because we don't want to reveal the back of the first card.
                 if (!flipCardController.state!.isFront) {
                   flipCardController.toggleCard();
+                  Future.delayed(const Duration(milliseconds: 250), () {
+                    _previousCard();
+                  });
+                } else {
+                  _previousCard();
                 }
-                setState(() {
-                  currentDefnIndex -= 1;
-                });
               }
             },
             child: const Icon(Icons.arrow_back_ios_rounded),
@@ -104,10 +106,13 @@ class _StudyState extends State<Study> {
                 // again, check if the card is on its backk and flip it before changing it.
                 if (!flipCardController.state!.isFront) {
                   flipCardController.toggleCard();
+                  // we delay changing the card for 200 millis till the card flips back.
+                  Future.delayed(const Duration(milliseconds: 250), () {
+                    _nextCard();
+                  });
+                } else {
+                  _nextCard();
                 }
-                setState(() {
-                  currentDefnIndex += 1;
-                });
               }
             },
             child: const Icon(Icons.arrow_forward_ios_rounded),
@@ -115,6 +120,20 @@ class _StudyState extends State<Study> {
         ],
       ),
     );
+  }
+
+  void _nextCard() {
+    // takes us to the next card
+    setState(() {
+      currentDefnIndex += 1;
+    });
+  }
+
+  void _previousCard() {
+    //takes us to the previous card
+    setState(() {
+      currentDefnIndex -= 1;
+    });
   }
 
   _buildMainDisplay(BuildContext context) {
@@ -127,37 +146,65 @@ class _StudyState extends State<Study> {
       return Container();
     } else if (dueDefns!.isEmpty) {
       // the list is loaded but is empity. there's no due card.
-      return const Center(
-        child: Text('No cards due.'),
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/no_cards_due.png', width: 90),
+            const Text(
+              'No cards due',
+              textScaleFactor: 1.2,
+              style: TextStyle(color: Colors.grey),
+            )
+          ],
+        ),
       );
     } else {
       // there are some due cards loaded so show them.
       if (currentDefnIndex == dueDefns!.length) {
         // the cards are exhausted so show a congrats message and disable the
         // buttons and slider.
-        return const Center(
-          child: Text('Congrats! you\'ve just finished studying due cards.'),
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/done_studying.png', width: 90),
+              const Text(
+                'Congrats! you\'re done for now',
+                textScaleFactor: 1.2,
+                style: TextStyle(color: Colors.grey),
+              )
+            ],
+          ),
         );
       } else {
         // display the current card.
         return Row(
           children: [
             Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: FlipCard(
-                    controller: flipCardController,
-                    speed: 200,
-                    fill: Fill.fillFront,
-                    front: DefinitionCard(dueDefns![currentDefnIndex],
-                        isIdle: true, isFront: true),
-                    back: DefinitionCard(
-                      dueDefns![currentDefnIndex],
-                      isIdle: true,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.shortestSide * 0.8,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: FlipCard(
+                          controller: flipCardController,
+                          speed: 200,
+                          fill: Fill.fillFront,
+                          front: DefinitionCard(dueDefns![currentDefnIndex],
+                              isIdle: true, isFront: true),
+                          back: DefinitionCard(
+                            dueDefns![currentDefnIndex],
+                            isIdle: true,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
             Column(
@@ -193,12 +240,18 @@ class _StudyState extends State<Study> {
                           // because we don't want to reveal the back of the first card.
                           if (!flipCardController.state!.isFront) {
                             flipCardController.toggleCard();
+                            // it takes 200 millisecons for the car to flip back so
+                            // delay changing the card for 200 milliseconds.
+                            Future.delayed(const Duration(milliseconds: 250),
+                                () {
+                              setState(() {
+                                _nextCard();
+                                sliderValue = 0;
+                              });
+                            });
+                          } else {
+                            _nextCard();
                           }
-                          setState(() {
-                            // change the card
-                            currentDefnIndex += 1;
-                            sliderValue = 0;
-                          });
                         }
                       },
                     ),
@@ -208,12 +261,9 @@ class _StudyState extends State<Study> {
                   height: 40,
                   child: Column(
                     children: const [
-                      RotatedBox(
-                        quarterTurns: 3,
-                        child: Text(
-                          'Diff',
-                          textScaleFactor: 1.2,
-                        ),
+                      Text(
+                        'D',
+                        textScaleFactor: 1.6,
                       ),
                       Expanded(
                         child: SizedBox(),

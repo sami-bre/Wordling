@@ -17,7 +17,7 @@ class SavedDefinitions extends StatefulWidget {
 
 class _SavedDefinitionsState extends State<SavedDefinitions> {
   DbHelper helper = DbHelper();
-  List<Definition> definitions = [];
+  List<Definition>? definitions;
   bool searchBarDisplayed = false;
 
   @override
@@ -106,96 +106,16 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
             ),
         ],
       ),
-      body: Center(
-        child: ListView.builder(
-          itemCount: definitions.length,
-          itemBuilder: (context, index) {
-            Definition current = definitions[index];
-            return Dismissible(
-              // I'm giving the dismissibles a unique key here.
-              key: UniqueKey(),
-              onDismissed: (direction) {
-                helper.deleteDefinition(current).then((value) {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(_buildDeleteSnackBar(current));
-                });
-                setState(() {
-                  definitions.remove(current);
-                });
-              },
-              child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListTile(
-                    title: Text(current.word),
-                    subtitle: Text(
-                      current.definition,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: Icon((current.origin == Origin.created)
-                        ? Icons.storage_rounded
-                        : Icons.cloud),
-                    trailing: IconButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) =>
-                              AddDefinitionDialog().showDialog(
-                            context,
-                            defn: Definition(
-                              id: current.id,
-                              word: current.word,
-                              definition: current.definition,
-                              example: current.example,
-                              origin: current.origin,
-                              n: current.n,
-                              eFactor: current.eFactor,
-                              interval: current.interval,
-                              lastStudyTime: current.lastStudyTime,
-                            ),
-                            isNew: false,
-                          ),
-                        ).then((value) {
-                          if (value != null) {
-                            setState(() {
-                              definitions[index] = value;
-                            });
-                          }
-                        });
-                      },
-                      icon: const Icon(Icons.edit),
-                    ),
-                    onTap: () {
-                      showDialog(
-                        useSafeArea: false,
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          scrollable: true,
-                          // this transparent color is theme independent.
-                          backgroundColor: Colors.transparent,
-                          contentPadding: const EdgeInsets.all(0),
-                          content: DefinitionCard(
-                            current,
-                            onSerialize: (isBeingSaved) {
-                              setState(() {
-                                isBeingSaved
-                                    ? definitions.add(current)
-                                    : definitions.remove(current);
-                              });
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+      body: Builder(
+        builder: (context) {
+          if (definitions == null) {
+            return Container();
+          } else if (definitions!.isEmpty) {
+            return _buildNoCardsView();
+          } else {
+            return _buildListView();
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -215,12 +135,123 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
           ).then((value) {
             if (value != null) {
               setState(() {
-                definitions.add(value);
+                // I'm assuming the add button won't be pressed in the very short interval
+                // where definitions is null.
+                definitions!.add(value);
               });
             }
           });
         },
         child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+
+  Widget _buildListView() {
+    return Center(
+      child: ListView.builder(
+        itemCount: definitions!.length,
+        itemBuilder: (context, index) {
+          Definition current = definitions![index];
+          return Dismissible(
+            // I'm giving the dismissibles a unique key here.
+            key: UniqueKey(),
+            onDismissed: (direction) {
+              helper.deleteDefinition(current).then((value) {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(_buildDeleteSnackBar(current));
+              });
+              setState(() {
+                definitions!.remove(current);
+              });
+            },
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
+              margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: ListTile(
+                  title: Text(current.word),
+                  subtitle: Text(
+                    current.definition,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  leading: Icon((current.origin == Origin.created)
+                      ? Icons.storage_rounded
+                      : Icons.cloud),
+                  trailing: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AddDefinitionDialog().showDialog(
+                          context,
+                          defn: Definition(
+                            id: current.id,
+                            word: current.word,
+                            definition: current.definition,
+                            example: current.example,
+                            origin: current.origin,
+                            n: current.n,
+                            eFactor: current.eFactor,
+                            interval: current.interval,
+                            lastStudyTime: current.lastStudyTime,
+                          ),
+                          isNew: false,
+                        ),
+                      ).then((value) {
+                        if (value != null) {
+                          setState(() {
+                            definitions![index] = value;
+                          });
+                        }
+                      });
+                    },
+                    icon: const Icon(Icons.edit),
+                  ),
+                  onTap: () {
+                    showDialog(
+                      useSafeArea: false,
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        scrollable: true,
+                        // this transparent color is theme independent.
+                        backgroundColor: Colors.transparent,
+                        contentPadding: const EdgeInsets.all(0),
+                        content: DefinitionCard(
+                          current,
+                          onSerialize: (isBeingSaved) {
+                            setState(() {
+                              isBeingSaved
+                                  ? definitions!.add(current)
+                                  : definitions!.remove(current);
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildNoCardsView() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/images/no_saved_cards.png', width: 90),
+          const Text(
+            'No saved cards',
+            textScaleFactor: 1.2,
+            style: TextStyle(color: Colors.grey),
+          )
+        ],
       ),
     );
   }

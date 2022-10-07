@@ -226,6 +226,19 @@ class _FrontState extends State<Front> {
           Row(
             children: [
               Image.asset(
+                'assets/images/website.png',
+                width: 22,
+              ),
+              const SizedBox(width: 5),
+              const Flexible(
+                  child: Text(
+                'www.samibre.com',
+              ))
+            ],
+          ),
+          Row(
+            children: [
+              Image.asset(
                 'assets/images/github.png',
                 width: 26,
               ),

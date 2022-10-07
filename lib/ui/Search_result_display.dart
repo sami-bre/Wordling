@@ -41,8 +41,19 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
                 List<Definition> defnList = snapshot.data! as List<Definition>;
                 // when the search result is empty.
                 if (defnList.isEmpty) {
-                  return const Center(
-                    child: Text('Nothing found.'),
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/images/search_found_nothing.png',
+                            width: 90),
+                        const Text(
+                          'Nothing found',
+                          textScaleFactor: 1.2,
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      ],
+                    ),
                   );
                 }
                 return SingleChildScrollView(
@@ -53,7 +64,19 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
                   ),
                 );
               } else if (snapshot.hasError) {
-                return const Text('Network problem.');
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/images/network_error.png', width: 90),
+                      const Text(
+                        'Oops! Network problem',
+                        textScaleFactor: 1.2,
+                        style: TextStyle(color: Colors.grey),
+                      )
+                    ],
+                  ),
+                );
               } else {
                 throw Exception(
                     'both snapshot.hasError and snapshot.hasData are false. '

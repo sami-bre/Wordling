@@ -11,8 +11,9 @@ class HelperDialog {
           Text('Wordling is a flashcard app with an embeded dictionary '
               'to search, save, create, edit and study flashcards with spaced repitition.'),
           SizedBox(height: 20),
-          Text('This is the front page where you can search for a definition. '
-              'It also shows you a randomly selected one from your saved cards.'),
+          Text(
+              'This is the front page where you can search for silly slang definitions :). '
+              'You also see a randomly selected one from your saved cards.'),
           SizedBox(height: 20),
           Text(
               'You can double tap on a card anywhere in the app to save or delete it. '
@@ -39,7 +40,7 @@ class HelperDialog {
               'on the slider. The upper two stages mean failure to recall.'),
           SizedBox(height: 20),
           Text(
-              'You can also use the arrow buttons to navigate the cards but only the slider '
+              'You can also use the arrow buttons to pass cards but only the slider '
               'registers your performance.')
         ],
       ),
