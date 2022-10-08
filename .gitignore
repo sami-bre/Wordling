@@ -35,6 +35,8 @@ migrate_working_dir/
 /macos/
 /web/
 /windows/
+/wordling.jks
+/android/key.properties
 
 # Web related
 lib/generated_plugin_registrant.dart
