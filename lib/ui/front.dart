@@ -206,14 +206,20 @@ class _FrontState extends State<Front> {
           const SizedBox(height: 10),
           Row(
             children: const [
-              Icon(Icons.telegram),
+              Icon(
+                Icons.telegram,
+                color: Colors.grey,
+              ),
               SizedBox(width: 5),
               Text('@sami_bre'),
             ],
           ),
           Row(
             children: const [
-              Icon(Icons.mail_outline_rounded),
+              Icon(
+                Icons.mail_outline_rounded,
+                color: Colors.grey,
+              ),
               SizedBox(width: 5),
               Flexible(
                 child: Text(
