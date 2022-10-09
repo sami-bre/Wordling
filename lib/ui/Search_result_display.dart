@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/definition.dart';
 import '../util/dbhelper.dart';
-import '../util/httpHelper.dart';
+import '../util/http_helper.dart';
 import 'definition_card.dart';
 
 class SearchResultDisplay extends StatefulWidget {
