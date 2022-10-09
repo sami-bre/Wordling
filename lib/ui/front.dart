@@ -257,6 +257,10 @@ class _FrontState extends State<Front> {
           ),
           const SizedBox(height: 20),
           const Text(
+            'Wordling makes use of the Urban Dictionary API.',
+          ),
+          const SizedBox(height: 20),
+          const Text(
             'Hit the question mark on this dialog to get help on how to use Wordling.',
           ),
           const SizedBox(height: 20),
