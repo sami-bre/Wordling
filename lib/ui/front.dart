@@ -4,6 +4,7 @@ import 'random_definition_display.dart';
 import 'Search_result_display.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Front extends StatefulWidget {
   const Front({Key? key}) : super(key: key);
@@ -204,56 +205,78 @@ class _FrontState extends State<Front> {
           const SizedBox(height: 10),
           const Text('By sami-bre'),
           const SizedBox(height: 10),
-          Row(
-            children: const [
-              Icon(
-                Icons.telegram,
-                color: Colors.grey,
-              ),
-              SizedBox(width: 5),
-              Text('@sami_bre'),
-            ],
-          ),
-          Row(
-            children: const [
-              Icon(
-                Icons.mail_outline_rounded,
-                color: Colors.grey,
-              ),
-              SizedBox(width: 5),
-              Flexible(
-                child: Text(
-                  'samuelbirhanu121@gmail.com',
-                  maxLines: 3,
+          GestureDetector(
+            onTap: () => launchTelegram(),
+            child: Row(
+              children: const [
+                Icon(
+                  Icons.telegram,
+                  color: Colors.grey,
                 ),
-              )
-            ],
+                SizedBox(width: 5),
+                Text('@sami_bre',
+                    style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline)),
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Image.asset(
-                'assets/images/website.png',
-                width: 22,
-              ),
-              const SizedBox(width: 5),
-              const Flexible(
+          GestureDetector(
+            onTap: () => launchGmail(),
+            child: Row(
+              children: const [
+                Icon(
+                  Icons.mail_outline_rounded,
+                  color: Colors.grey,
+                ),
+                SizedBox(width: 5),
+                Flexible(
                   child: Text(
-                'www.samibre.com',
-              ))
-            ],
+                    'samuelbirhanu121@gmail.com',
+                    style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline),
+                    maxLines: 3,
+                  ),
+                )
+              ],
+            ),
           ),
-          Row(
-            children: [
-              Image.asset(
-                'assets/images/github.png',
-                width: 26,
-              ),
-              const SizedBox(width: 5),
-              const Flexible(
-                  child: Text(
-                'github.com/sami-bre',
-              ))
-            ],
+          GestureDetector(
+            onTap: () => launchWebsite(),
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/images/website.png',
+                  width: 22,
+                ),
+                const SizedBox(width: 5),
+                const Flexible(
+                    child: Text(
+                  'www.samibre.com',
+                  style: TextStyle(
+                      color: Colors.blue, decoration: TextDecoration.underline),
+                ))
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: () => launchGithub(),
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/images/github.png',
+                  width: 26,
+                ),
+                const SizedBox(width: 5),
+                const Flexible(
+                    child: Text(
+                  'github.com/sami-bre',
+                  style: TextStyle(
+                      color: Colors.blue, decoration: TextDecoration.underline),
+                ))
+              ],
+            ),
           ),
           const SizedBox(height: 20),
           const Text(
@@ -270,5 +293,27 @@ class _FrontState extends State<Front> {
         ],
       ),
     );
+  }
+
+  void launchTelegram() {
+    // I don't know why but only this deprecated version seems to do the work.
+    launch("https://telegram.me/sami_bre");
+  }
+
+  void launchWebsite() {
+    Uri websiteUrl = Uri.parse('https://samibre.com');
+    launchUrl(websiteUrl);
+  }
+
+  void launchGithub() {
+    launchUrl(Uri.parse('https://github.com/sami-bre'));
+  }
+
+  void launchGmail() async {
+    Uri gmailUrl = Uri.parse(
+        'mailto:samuelbirhanu121@gmail.com?subject=Comment from a wordling user.');
+    if (await canLaunchUrl(gmailUrl)) {
+      launchUrl(gmailUrl);
+    }
   }
 }

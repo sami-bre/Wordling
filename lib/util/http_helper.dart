@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:io';
 import 'package:http/http.dart';
