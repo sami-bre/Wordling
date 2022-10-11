@@ -193,7 +193,6 @@ class _StudyState extends State<Study> {
                         child: FlipCard(
                           controller: flipCardController,
                           speed: 200,
-                          fill: Fill.fillFront,
                           front: DefinitionCard(dueDefns![currentDefnIndex],
                               isIdle: true, isFront: true),
                           back: DefinitionCard(

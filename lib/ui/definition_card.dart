@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class DefinitionCard extends StatefulWidget {
   final Definition definition;
-  bool isFront; // if isFront, the card only shows the word.
+  late final bool isFront; // if isFront, the card only shows the word.
   final bool isIdle; // if idle, the card won't respond to a double tap
   final Function(bool isBeingSaved)?
       onSerialize; // a function to do sth in addition to saving/deleting uopn double click.
@@ -56,7 +56,7 @@ class DefinitionCardState extends State<DefinitionCard> {
     TextStyle wordTextStyle;
     TextStyle wordLabelStyle;
     if (widget.isFront) {
-      wordTextStyle = Theme.of(context).textTheme.displaySmall!;
+      wordTextStyle = TextStyle(fontSize: 30, color: Colors.grey[800]);
       wordLabelStyle = Theme.of(context).textTheme.labelLarge!;
     } else {
       wordTextStyle = Theme.of(context).textTheme.headline6!;
@@ -92,7 +92,7 @@ class DefinitionCardState extends State<DefinitionCard> {
             Radius.circular(30.0),
           ),
           child: Container(
-            // the width of a card should be .8 * the screen width.
+              // the width of a card should be .8 * the screen width.
               width: MediaQuery.of(context).size.shortestSide * 0.8,
               decoration: BoxDecoration(
                 color: isSaved ? savedColor : unsavedColor,
