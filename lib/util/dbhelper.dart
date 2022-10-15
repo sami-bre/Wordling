@@ -24,7 +24,6 @@ class DbHelper {
             'id INEGER NOT NULL, '
             'word TEXT, '
             'definition TEXT, '
-            'example TEXT, '
             'origin TEXT NOT NULL, '
             'n INTEGER, '
             'eFactor REAL, '

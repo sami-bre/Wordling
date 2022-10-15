@@ -126,9 +126,8 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
               defn: Definition(
                   id: 0, // the id for the new defn will be set by the AddDefinitionDialog class.
                   // we can't do it here because we'll need to wait for an asynchronous gap to get the id.
-                  word: '',
-                  definition: '',
-                  example: '',
+                  front: '',
+                  back: '',
                   origin: Origin.created),
               isNew: true,
             ),
@@ -136,7 +135,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
             if (value != null) {
               setState(() {
                 // I'm assuming the add button won't be pressed in the very short interval
-                // where definitions is null.
+                // when definitions is null.
                 definitions!.add(value);
               });
             }
@@ -172,9 +171,9 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: ListTile(
-                  title: Text(current.word),
+                  title: Text(current.front),
                   subtitle: Text(
-                    current.definition,
+                    current.back,
                     overflow: TextOverflow.ellipsis,
                   ),
                   leading: Icon((current.origin == Origin.created)
@@ -188,9 +187,8 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                           context,
                           defn: Definition(
                             id: current.id,
-                            word: current.word,
-                            definition: current.definition,
-                            example: current.example,
+                            front: current.front,
+                            back: current.back,
                             origin: current.origin,
                             n: current.n,
                             eFactor: current.eFactor,
@@ -264,7 +262,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('${defn.word} deleted.'),
+            Text('${defn.front} deleted.'),
             TextButton.icon(
               onPressed: () {
                 helper

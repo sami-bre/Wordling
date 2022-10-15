@@ -16,9 +16,8 @@ class HttpHelper {
     return raw
         .map((e) => Definition(
               id: e['defid'],
-              word: stripAngleBrackets(e['word']),
-              definition: stripAngleBrackets(e['definition']),
-              example: stripAngleBrackets(e['example']),
+              front: stripAngleBrackets(e['word']),
+              back: stripAngleBrackets(e['definition']),
               origin: Origin.downloaded,
             ))
         .toList();

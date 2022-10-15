@@ -113,7 +113,7 @@ class DefinitionCardState extends State<DefinitionCard> {
                       textAlign: widget.isFront ? TextAlign.center : null,
                     ),
                     Text(
-                      widget.definition.word,
+                      widget.definition.front,
                       style: wordTextStyle,
                       textAlign: widget.isFront ? TextAlign.center : null,
                     ),
@@ -121,38 +121,20 @@ class DefinitionCardState extends State<DefinitionCard> {
                       const SizedBox(
                         height: 36.0,
                       ),
-                    if (widget.definition.definition != '' && !widget.isFront)
+                    if (widget.definition.back != '' && !widget.isFront)
                       Text(
-                        'definition',
+                        'back side',
                         style: Theme.of(context).textTheme.labelSmall,
                       ),
-                    if (widget.definition.definition != '' && !widget.isFront)
+                    if (widget.definition.back != '' && !widget.isFront)
                       const SizedBox(
                         height: 10.0,
                       ),
-                    if (widget.definition.definition != '' && !widget.isFront)
+                    if (widget.definition.back != '' && !widget.isFront)
                       Text(
-                        widget.definition.definition,
+                        widget.definition.back,
                         textScaleFactor: 1.1,
                       ),
-                    if (widget.definition.example != '' && !widget.isFront)
-                      const SizedBox(
-                        height: 30.0,
-                      ),
-                    if (widget.definition.example != '' && !widget.isFront)
-                      Text(
-                        'example',
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    if (widget.definition.example != '' && !widget.isFront)
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                    if (widget.definition.example != '' && !widget.isFront)
-                      Text(
-                        widget.definition.example,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      )
                   ],
                 ),
               )),
