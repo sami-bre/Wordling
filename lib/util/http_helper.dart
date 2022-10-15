@@ -2,10 +2,10 @@ import 'dart:convert';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:io';
 import 'package:http/http.dart';
-import 'package:wordling/models/definition.dart';
+import 'package:wordling/models/card.dart';
 
 class HttpHelper {
-  static Future<List<Definition>> search(String searchTerm) async {
+  static Future<List<Card>> search(String searchTerm) async {
     Uri url =
         Uri.parse('https://api.urbandictionary.com/v0/define?term=$searchTerm');
     Response response = await get(url);
@@ -14,7 +14,7 @@ class HttpHelper {
     }
     List raw = json.decode(response.body)['list'];
     return raw
-        .map((e) => Definition(
+        .map((e) => Card(
               id: e['defid'],
               front: stripAngleBrackets(e['word']),
               back: stripAngleBrackets(e['definition']),

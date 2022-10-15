@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/definition.dart';
+import '../models/card.dart' as model;
 import '../util/dbhelper.dart';
 import '../util/http_helper.dart';
-import 'definition_card.dart';
+import 'wordling_card.dart';
 
 class SearchResultDisplay extends StatefulWidget {
   final String searchTerm;
@@ -38,9 +38,9 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
-                List<Definition> defnList = snapshot.data! as List<Definition>;
+                List<model.Card> cardList = snapshot.data! as List<model.Card>;
                 // when the search result is empty.
-                if (defnList.isEmpty) {
+                if (cardList.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -59,7 +59,7 @@ class SearchResultDisplayState extends State<SearchResultDisplay> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      for (Definition defn in defnList) DefinitionCard(defn)
+                      for (model.Card card in cardList) WordlingCard(card)
                     ],
                   ),
                 );

@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:wordling/models/definition.dart';
+import 'package:wordling/models/card.dart' as model;
 import 'package:wordling/util/dbhelper.dart';
 
-class AddDefinitionDialog {
+class AddCardDialog {
   TextEditingController txtFront = TextEditingController();
   TextEditingController txtBack = TextEditingController();
   DbHelper helper = DbHelper();
 
   AlertDialog showDialog(
     BuildContext context, {
-    required Definition defn,
+    required model.Card card,
     required bool isNew,
   }) {
     if (!isNew) {
-      txtFront.text = defn.front;
-      txtBack.text = defn.back;
+      txtFront.text = card.front;
+      txtBack.text = card.back;
     } else {
-      // the the next available id for the definition.
-      helper.getNextCreatedDefinitionId().then((value) {
-        defn.id = value;
+      // the the next available id for the card.
+      helper.getNextCreatedCardId().then((value) {
+        card.id = value;
       });
     }
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       scrollable: true,
-      title: Text(isNew ? 'New definition' : 'Edit definition'),
+      title: Text(isNew ? 'New card' : 'Edit card'),
       content: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextField(
+              minLines: 3,
+              maxLines: 6,
               controller: txtFront,
-              decoration: const InputDecoration(label: Text('Word')),
+              decoration: const InputDecoration(label: Text('Front')),
             ),
           ),
           Padding(
@@ -41,7 +43,7 @@ class AddDefinitionDialog {
               minLines: 3,
               maxLines: 6,
               controller: txtBack,
-              decoration: const InputDecoration(label: Text('Definition')),
+              decoration: const InputDecoration(label: Text('Back')),
             ),
           ),
         ],
@@ -55,10 +57,10 @@ class AddDefinitionDialog {
         ),
         ElevatedButton(
           onPressed: () {
-            defn.front = txtFront.text;
-            defn.back = txtBack.text;
-            helper.insertDefinition(defn);
-            Navigator.pop(context, defn);
+            card.front = txtFront.text;
+            card.back = txtBack.text;
+            helper.insertCard(card);
+            Navigator.pop(context, card);
           },
           child: const Text('Save'),
         ),

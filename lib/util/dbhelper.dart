@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:wordling/models/definition.dart';
+import 'package:wordling/models/card.dart';
 
 class DbHelper {
   final int version = 1;
@@ -17,13 +17,13 @@ class DbHelper {
 
   Future<Database> openDb() async {
     db ??= await openDatabase(
-      join(await getDatabasesPath(), 'wordling_definitions.db'),
+      join(await getDatabasesPath(), 'wordling_cards.db'),
       onCreate: (database, version) {
         print('creating database');
-        database.execute('CREATE TABLE definitions ('
+        database.execute('CREATE TABLE cards ('
             'id INEGER NOT NULL, '
-            'word TEXT, '
-            'definition TEXT, '
+            'front TEXT, '
+            'back TEXT, '
             'origin TEXT NOT NULL, '
             'n INTEGER, '
             'eFactor REAL, '
@@ -39,71 +39,71 @@ class DbHelper {
   Future testDb() async {
     db = await openDb();
     // await db!.execute(
-    //     'INSERT INTO definitions VALUES (5, "dedi", "bud bud", "bud bud bud", "${Origin.created.name}")');
-    List<Map<String, dynamic>> result = await db!.query('definitions');
+    //     'INSERT INTO cards VALUES (5, "dedi", "bud bud", "bud bud bud", "${Origin.created.name}")');
+    List<Map<String, dynamic>> result = await db!.query('cards');
     result.forEach((element) {
       print(element);
     });
   }
 
-  Future<List<Definition>> getAllDefinitions() async {
+  Future<List<Card>> getAllCards() async {
     db = await openDb();
     List<Map<String, dynamic>> raw =
-        await db!.query('definitions', orderBy: 'id desc');
-    List<Definition> defns =
-        List.generate(raw.length, (index) => Definition.fromMap(raw[index]));
-    return defns;
+        await db!.query('cards', orderBy: 'id desc');
+    List<Card> cards =
+        List.generate(raw.length, (index) => Card.fromMap(raw[index]));
+    return cards;
   }
 
-  Future<List<Definition>> getDueDefinitions() async {
+  Future<List<Card>> getDueCards() async {
     db = await openDb();
     int now = DateTime.now().millisecondsSinceEpoch;
     List<Map<String, dynamic>> raw = await db!.query(
-      'definitions',
+      'cards',
       where: 'lastStudyTime IS NULL OR (lastStudyTime + interval) <= ?',
       whereArgs: [now],
     );
-    List<Definition> dueDefns =
-        List.generate(raw.length, (index) => Definition.fromMap(raw[index]));
-    return dueDefns;
+    List<Card> dueCards =
+        List.generate(raw.length, (index) => Card.fromMap(raw[index]));
+    return dueCards;
   }
 
-  Future<int> insertDefinition(Definition defn) async {
+  Future<int> insertCard(Card card) async {
     db = await openDb();
     int id = await db!.insert(
-      'definitions',
-      defn.toMap(),
+      'cards',
+      card.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     return id;
   }
 
-  Future<void> deleteDefinition(Definition defn) async {
+  Future<void> deleteCard(Card card) async {
     db = await openDb();
     db!.delete(
-      'definitions',
+      'cards',
       where: 'id=? and origin=?',
-      whereArgs: [defn.id, defn.origin.name],
+      whereArgs: [card.id, card.origin.name],
     );
   }
 
-  Future<Definition?> getRandomDefinition() async {
+  Future<Card?> getRandomCard() async {
     db = await openDb();
-    List<Definition> defns = await getAllDefinitions();
-    if (defns.isEmpty) return null;
-    return defns[Random().nextInt(defns.length)];
+    List<Card> cards = await getAllCards();
+    if (cards.isEmpty) return null;
+    return cards[Random().nextInt(cards.length)];
   }
 
-  Future<bool> isSaved(Definition defn) async {
+  Future<bool> isSaved(Card card) async {
     db = await openDb();
-    List<Map<String, dynamic>> raw = await db!.query('definitions',
-        where: 'id=? and origin=?', whereArgs: [defn.id, defn.origin.name]);
+    List<Map<String, dynamic>> raw = await db!.query('cards',
+        where: 'id=? and origin=?', whereArgs: [card.id, card.origin.name]);
     return raw.isNotEmpty;
   }
 
-  Future<int> getNextCreatedDefinitionId() async {
+  Future<int> getNextCreatedCardId() async {
     db = await openDb();
-    List<Map<String, dynamic>> raw = await db!.query('definitions',
+    List<Map<String, dynamic>> raw = await db!.query('cards',
         where: 'origin=?',
         whereArgs: [Origin.created.name],
         orderBy: 'id desc',

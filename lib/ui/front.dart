@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wordling/ui/helper_dialog.dart';
-import 'random_definition_display.dart';
+import 'random_card_display.dart';
 import 'Search_result_display.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,7 +16,7 @@ class Front extends StatefulWidget {
 class _FrontState extends State<Front> {
   bool searchResultDisplayed = false;
   bool searchBarDisplayed = false;
-  final Widget randDefDisplay = const RandomDefinitionDisplay();
+  final Widget randDefDisplay = const RandomCardDisplay();
   late Widget displayed;
   // the key below gives me a reference to the state object to call update() on it.
   final GlobalKey<SearchResultDisplayState> _key = GlobalKey();

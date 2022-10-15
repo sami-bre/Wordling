@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:wordling/models/definition.dart';
+import 'package:wordling/models/card.dart' as model;
 import '../util/dbhelper.dart';
 import 'package:get/get.dart';
 
-class DefinitionCard extends StatefulWidget {
-  final Definition definition;
-  late final bool isFront; // if isFront, the card only shows the word.
+class WordlingCard extends StatefulWidget {
+  final model.Card card;
+  late final bool isFront; // if isFront, the card only shows the front text.
   final bool isIdle; // if idle, the card won't respond to a double tap
   final Function(bool isBeingSaved)?
-      onSerialize; // a function to do sth in addition to saving/deleting uopn double click.
+      onSerialize; // a function to do sth in addition to saving/deleting upon double click.
 
-  DefinitionCard(
-    this.definition, {
+  WordlingCard(
+    this.card, {
     this.isFront = false,
     this.isIdle = false,
     this.onSerialize,
@@ -19,18 +19,18 @@ class DefinitionCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  DefinitionCardState createState() => DefinitionCardState();
+  WordlingCardState createState() => WordlingCardState();
 }
 
-class DefinitionCardState extends State<DefinitionCard> {
+class WordlingCardState extends State<WordlingCard> {
   DbHelper helper = DbHelper();
   bool isSaved = false;
 
-  DefinitionCardState();
+  WordlingCardState();
 
   @override
   void initState() {
-    helper.isSaved(widget.definition).then((value) {
+    helper.isSaved(widget.card).then((value) {
       setState(() {
         isSaved = value;
       });
@@ -52,15 +52,12 @@ class DefinitionCardState extends State<DefinitionCard> {
       savedColor = const Color.fromARGB(255, 25, 67, 95);
       unsavedColor = const Color.fromARGB(255, 70, 70, 70);
     }
-    // the style of the word text depends on whether this is a front
-    TextStyle wordTextStyle;
-    TextStyle wordLabelStyle;
+    // the style of the front text depends on whether this card is a front card
+    TextStyle frontTextStyle;
     if (widget.isFront) {
-      wordTextStyle = TextStyle(fontSize: 30, color: Colors.grey[800]);
-      wordLabelStyle = Theme.of(context).textTheme.labelLarge!;
+      frontTextStyle = TextStyle(fontSize: 30);
     } else {
-      wordTextStyle = Theme.of(context).textTheme.headline6!;
-      wordLabelStyle = Theme.of(context).textTheme.labelSmall!;
+      frontTextStyle = Theme.of(context).textTheme.headline6!;
     }
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 16.0),
@@ -70,20 +67,20 @@ class DefinitionCardState extends State<DefinitionCard> {
             : () {
                 // act upon double tap only if the card is not idle.
                 if (!isSaved) {
-                  // the word is not saved so save it.
-                  helper.insertDefinition(widget.definition);
+                  // the card is not saved so save it.
+                  helper.insertCard(widget.card);
                   setState(() {
                     isSaved = true;
                   });
                 } else {
-                  // the word is saved so delete it.
-                  helper.deleteDefinition(widget.definition);
+                  // the card is saved so delete it.
+                  helper.deleteCard(widget.card);
                   setState(() {
                     isSaved = false;
                   });
                 }
                 // if we are given the onSerialize function, we call it
-                // here after saving/deleting the definition from the database.
+                // here after saving/deleting the card from the database.
                 if (widget.onSerialize != null) widget.onSerialize!(isSaved);
               },
         child: Material(
@@ -108,31 +105,17 @@ class DefinitionCardState extends State<DefinitionCard> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Text(
-                      'word',
-                      style: wordLabelStyle,
-                      textAlign: widget.isFront ? TextAlign.center : null,
-                    ),
-                    Text(
-                      widget.definition.front,
-                      style: wordTextStyle,
+                      widget.card.front,
+                      style: frontTextStyle,
                       textAlign: widget.isFront ? TextAlign.center : null,
                     ),
                     if (!widget.isFront)
                       const SizedBox(
                         height: 36.0,
                       ),
-                    if (widget.definition.back != '' && !widget.isFront)
+                    if (widget.card.back != '' && !widget.isFront)
                       Text(
-                        'back side',
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    if (widget.definition.back != '' && !widget.isFront)
-                      const SizedBox(
-                        height: 10.0,
-                      ),
-                    if (widget.definition.back != '' && !widget.isFront)
-                      Text(
-                        widget.definition.back,
+                        widget.card.back,
                         textScaleFactor: 1.1,
                       ),
                   ],

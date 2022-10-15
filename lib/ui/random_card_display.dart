@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:wordling/ui/definition_card.dart';
+import 'package:wordling/ui/wordling_card.dart';
 import 'package:wordling/util/dbhelper.dart';
-import '../models/definition.dart';
+import '../models/card.dart' as model;
 
-class RandomDefinitionDisplay extends StatefulWidget {
-  const RandomDefinitionDisplay({Key? key}) : super(key: key);
+class RandomCardDisplay extends StatefulWidget {
+  const RandomCardDisplay({Key? key}) : super(key: key);
 
   @override
-  State<RandomDefinitionDisplay> createState() =>
-      RandomDefinitionDisplayState();
+  State<RandomCardDisplay> createState() => RandomCardDisplayState();
 }
 
-class RandomDefinitionDisplayState extends State<RandomDefinitionDisplay> {
+class RandomCardDisplayState extends State<RandomCardDisplay> {
   final DbHelper helper = DbHelper();
-  Definition? word;
+  model.Card? card;
 
-  void showWord() async {
-    Definition starter = Definition(
+  void showCard() async {
+    model.Card starter = model.Card(
         id: 0,
         front: 'starter',
         back:
             'Food items served before the main courses of a meal (prior to an entrée). Synonymous with an appetizer',
-        origin: Origin.created);
-    word = await helper.getRandomDefinition() ?? starter;
+        origin: model.Origin.created);
+    card = await helper.getRandomCard() ?? starter;
     setState(() {
-      word = word;
+      card = card;
     });
   }
 
   @override
   void initState() {
-    showWord();
+    showCard();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return (word == null)
+    return (card == null)
         ? Container()
         : Center(
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 30),
-                child: DefinitionCard(word!),
+                child: WordlingCard(card!),
               ),
             ),
           );

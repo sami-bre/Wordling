@@ -6,14 +6,14 @@ https://www.freshcardsapp.com/srs/write-your-own-algorithm.html
 */
 
 import 'dart:math';
-import 'package:wordling/models/definition.dart';
+import 'package:wordling/models/card.dart';
 
 class SRS {
   // the Spaced Repitition System class
 // the spaced repitition system function.
-  static Definition srsFunction(Definition previousState, int score) {
-    // this function takes a definition with an old state from a previous study
-    //and evaluationscore for the current study and returns the state for the
+  static Card srsFunction(Card previousState, int score) {
+    // this function takes a card with an old state from a previous study
+    // and evaluationscore for the current study and returns the state for the
     // curent study.
     // if this is the first time a card is examined, the lastStudyTime (and eFactor and n and interval)
     // are null. so let's set default values.
@@ -22,7 +22,7 @@ class SRS {
       previousState.eFactor = 2.2;
       previousState.interval = 0;
     }
-    // now let's make the definition have a new state.
+    // now let's make the card have a new state.
     int n;
     double eFactor, interval;
 
@@ -46,8 +46,8 @@ class SRS {
         interval *= 86400000; // converting the interval back to milliseconds.
       }
     }
-    // finally, set the new values into the definition and return it.
-    Definition newState = previousState;
+    // finally, set the new values into the card and return it.
+    Card newState = previousState;
     newState.n = n;
     newState.eFactor = eFactor;
     newState.interval = interval;

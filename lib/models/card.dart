@@ -1,6 +1,6 @@
 enum Origin { created, downloaded }
 
-class Definition {
+class Card {
   int id;
   String front;
   String back;
@@ -10,7 +10,7 @@ class Definition {
   double? interval;
   double? lastStudyTime;
 
-  Definition({
+  Card({
     required this.id,
     required this.front,
     required this.back,
@@ -21,10 +21,10 @@ class Definition {
     this.lastStudyTime,
   });
 
-  Definition.fromMap(Map<String, dynamic> map)
+  Card.fromMap(Map<String, dynamic> map)
       : id = map['id'],
-        front = map['word'],
-        back = map['definition'],
+        front = map['front'],
+        back = map['back'],
         origin =
             (map['origin'] == 'created') ? Origin.created : Origin.downloaded,
         n = map['n'],
@@ -35,8 +35,8 @@ class Definition {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'word': front,
-      'definition': back,
+      'front': front,
+      'back': back,
       'origin': origin.name,
       'n': n,
       'eFactor': eFactor,

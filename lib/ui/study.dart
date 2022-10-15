@@ -2,10 +2,10 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wordling/ui/definition_card.dart';
+import 'package:wordling/ui/wordling_card.dart';
 import 'package:wordling/ui/helper_dialog.dart';
 import 'package:wordling/util/dbhelper.dart';
-import '../models/definition.dart';
+import '../models/card.dart' as model;
 import '../SRS/srs.dart';
 
 const Map<int, String> comments = {
@@ -26,20 +26,20 @@ class Study extends StatefulWidget {
 class _StudyState extends State<Study> {
   DbHelper helper = DbHelper();
   FlipCardController flipCardController = FlipCardController();
-  List<Definition>? dueDefns;
-  int currentDefnIndex = 0;
+  List<model.Card>? dueCards;
+  int currentCardIndex = 0;
   double sliderValue = 0;
 
   @override
   void initState() {
-    getDefnsToStudy();
+    getCardsToStudy();
     super.initState();
   }
 
-  void getDefnsToStudy() async {
-    dueDefns = await helper.getDueDefinitions();
+  void getCardsToStudy() async {
+    dueCards = await helper.getDueCards();
     setState(() {
-      dueDefns = dueDefns;
+      dueCards = dueCards;
     });
   }
 
@@ -67,8 +67,8 @@ class _StudyState extends State<Study> {
           children: [
             const Text('Study'),
             const Expanded(flex: 4, child: SizedBox()),
-            if (dueDefns != null && dueDefns!.length - currentDefnIndex > 0)
-              Text('Left: ${dueDefns!.length - currentDefnIndex}'),
+            if (dueCards != null && dueCards!.length - currentCardIndex > 0)
+              Text('Left: ${dueCards!.length - currentCardIndex}'),
             const Expanded(flex: 1, child: SizedBox())
           ],
         ),
@@ -83,7 +83,7 @@ class _StudyState extends State<Study> {
           FloatingActionButton(
             heroTag: 'previous',
             onPressed: () {
-              if (currentDefnIndex > 0) {
+              if (currentCardIndex > 0) {
                 // flip the card to front if it's facing back before changeing it.
                 // because we don't want to reveal the back of the first card.
                 if (!flipCardController.state!.isFront) {
@@ -102,7 +102,7 @@ class _StudyState extends State<Study> {
           FloatingActionButton(
             heroTag: 'forward',
             onPressed: () {
-              if (currentDefnIndex < dueDefns!.length - 1) {
+              if (currentCardIndex < dueCards!.length - 1) {
                 // again, check if the card is on its backk and flip it before changing it.
                 if (!flipCardController.state!.isFront) {
                   flipCardController.toggleCard();
@@ -125,14 +125,14 @@ class _StudyState extends State<Study> {
   void _nextCard() {
     // takes us to the next card
     setState(() {
-      currentDefnIndex += 1;
+      currentCardIndex += 1;
     });
   }
 
   void _previousCard() {
     //takes us to the previous card
     setState(() {
-      currentDefnIndex -= 1;
+      currentCardIndex -= 1;
     });
   }
 
@@ -141,10 +141,10 @@ class _StudyState extends State<Study> {
     MediaQuery.of(context).orientation == Orientation.portrait
         ? sliderHeight = 280
         : sliderHeight = 200;
-    if (dueDefns == null) {
+    if (dueCards == null) {
       // the list of due cards hasn't loaded yet.
       return Container();
-    } else if (dueDefns!.isEmpty) {
+    } else if (dueCards!.isEmpty) {
       // the list is loaded but is empity. there's no due card.
       return Center(
         child: Column(
@@ -161,7 +161,7 @@ class _StudyState extends State<Study> {
       );
     } else {
       // there are some due cards loaded so show them.
-      if (currentDefnIndex == dueDefns!.length) {
+      if (currentCardIndex == dueCards!.length) {
         // the cards are exhausted so show a congrats message and disable the
         // buttons and slider.
         return Center(
@@ -193,10 +193,10 @@ class _StudyState extends State<Study> {
                         child: FlipCard(
                           controller: flipCardController,
                           speed: 200,
-                          front: DefinitionCard(dueDefns![currentDefnIndex],
+                          front: WordlingCard(dueCards![currentCardIndex],
                               isIdle: true, isFront: true),
-                          back: DefinitionCard(
-                            dueDefns![currentDefnIndex],
+                          back: WordlingCard(
+                            dueCards![currentCardIndex],
                             isIdle: true,
                           ),
                         ),
@@ -229,9 +229,9 @@ class _StudyState extends State<Study> {
                       onChangeEnd: (value) {
                         // do the updating stuff
                         if (value > 0) {
-                          helper.insertDefinition(
+                          helper.insertCard(
                             SRS.srsFunction(
-                              dueDefns![currentDefnIndex],
+                              dueCards![currentCardIndex],
                               6 - sliderValue.toInt(),
                             ),
                           );

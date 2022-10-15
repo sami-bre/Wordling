@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:wordling/models/definition.dart';
+import 'package:wordling/models/card.dart';
 import 'package:wordling/util/dbhelper.dart';
 
 class LocalSearchEngine {
   static DbHelper dbHelper = DbHelper();
 
-  static Future<List<Definition>> localSearch(String searchTerm) async {
-    List<Definition> all = await dbHelper.getAllDefinitions();
+  static Future<List<Card>> localSearch(String searchTerm) async {
+    List<Card> all = await dbHelper.getAllCards();
     all.sort(((a, b) => compareSimilarity(a, b, searchTerm)));
     // this states how many entries will be in the search result.
     const int limitResults = 15;
@@ -17,12 +17,12 @@ class LocalSearchEngine {
   }
 
   static int compareSimilarity(
-      Definition firstDefn, Definition secondDefn, String searchTerm) {
+      Card firstCard, Card secondCard, String searchTerm) {
     int firstValue = 0;
     int secondValue = 0;
-    // compering the searchTerm with the word of the definition.
-    firstValue += 10 * lcss(firstDefn.front, searchTerm);
-    secondValue += 10 * lcss(secondDefn.front, searchTerm);
+    // comparing the searchTerm with the front text of the card.
+    firstValue += 10 * lcss(firstCard.front, searchTerm);
+    secondValue += 10 * lcss(secondCard.front, searchTerm);
     // finally return the comparison result
     return secondValue.compareTo(firstValue);
   }

@@ -36,7 +36,7 @@ class HelperDialog {
           SizedBox(height: 20),
           Text(
               'A single tap on the card flips it to reveal what\'s behind. Use the slider on the left '
-              'to tell Wordling how difficult it is to recall the definition. Pay attention to the stages '
+              'to tell Wordling how difficult it is to recall the card. Pay attention to the stages '
               'on the slider. The upper two stages mean failure to recall.'),
           SizedBox(height: 20),
           Text(

@@ -1,42 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wordling/ui/add_definition_dialogue.dart';
-import 'package:wordling/ui/definition_card.dart';
+import 'package:wordling/ui/add_card_dialogue.dart';
+import 'package:wordling/ui/wordling_card.dart';
 import 'package:wordling/ui/helper_dialog.dart';
-
-import '../models/definition.dart';
+import '../models/card.dart' as model;
 import '../util/dbhelper.dart';
 import '../util/local_search_engine.dart';
 
-class SavedDefinitions extends StatefulWidget {
-  const SavedDefinitions({Key? key}) : super(key: key);
+class SavedCards extends StatefulWidget {
+  const SavedCards({Key? key}) : super(key: key);
 
   @override
-  State<SavedDefinitions> createState() => _SavedDefinitionsState();
+  State<SavedCards> createState() => _SavedCardsState();
 }
 
-class _SavedDefinitionsState extends State<SavedDefinitions> {
+class _SavedCardsState extends State<SavedCards> {
   DbHelper helper = DbHelper();
-  List<Definition>? definitions;
+  List<model.Card>? cards;
   bool searchBarDisplayed = false;
 
   @override
   void initState() {
-    showAllDefinitions();
+    showAllCards();
     super.initState();
   }
 
-  void showAllDefinitions() async {
-    definitions = await helper.getAllDefinitions();
+  void showAllCards() async {
+    cards = await helper.getAllCards();
     setState(() {
-      definitions = definitions;
+      cards = cards;
     });
   }
 
   void showSearchResults(String searchTerm) async {
-    definitions = await LocalSearchEngine.localSearch(searchTerm);
+    cards = await LocalSearchEngine.localSearch(searchTerm);
     setState(() {
-      definitions = definitions;
+      cards = cards;
     });
   }
 
@@ -95,8 +94,8 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
               onPressed: () {
                 setState(() {
                   searchBarDisplayed = false;
-                  // update the definitions list so it contains all of them
-                  showAllDefinitions();
+                  // update the cards list so it contains all of them
+                  showAllCards();
                 });
               },
               icon: const Icon(
@@ -108,9 +107,9 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
       ),
       body: Builder(
         builder: (context) {
-          if (definitions == null) {
+          if (cards == null) {
             return Container();
-          } else if (definitions!.isEmpty) {
+          } else if (cards!.isEmpty) {
             return _buildNoCardsView();
           } else {
             return _buildListView();
@@ -121,22 +120,22 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
         onPressed: () {
           showDialog(
             context: context,
-            builder: (context) => AddDefinitionDialog().showDialog(
+            builder: (context) => AddCardDialog().showDialog(
               context,
-              defn: Definition(
-                  id: 0, // the id for the new defn will be set by the AddDefinitionDialog class.
+              card: model.Card(
+                  id: 0, // the id for the new card will be set by the AddCardDialog class.
                   // we can't do it here because we'll need to wait for an asynchronous gap to get the id.
                   front: '',
                   back: '',
-                  origin: Origin.created),
+                  origin: model.Origin.created),
               isNew: true,
             ),
           ).then((value) {
             if (value != null) {
               setState(() {
                 // I'm assuming the add button won't be pressed in the very short interval
-                // when definitions is null.
-                definitions!.add(value);
+                // when the cards list is null.
+                cards!.add(value);
               });
             }
           });
@@ -149,19 +148,19 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
   Widget _buildListView() {
     return Center(
       child: ListView.builder(
-        itemCount: definitions!.length,
+        itemCount: cards!.length,
         itemBuilder: (context, index) {
-          Definition current = definitions![index];
+          model.Card current = cards![index];
           return Dismissible(
             // I'm giving the dismissibles a unique key here.
             key: UniqueKey(),
             onDismissed: (direction) {
-              helper.deleteDefinition(current).then((value) {
+              helper.deleteCard(current).then((value) {
                 ScaffoldMessenger.of(context)
                     .showSnackBar(_buildDeleteSnackBar(current));
               });
               setState(() {
-                definitions!.remove(current);
+                cards!.remove(current);
               });
             },
             child: Card(
@@ -176,16 +175,16 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                     current.back,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  leading: Icon((current.origin == Origin.created)
+                  leading: Icon((current.origin == model.Origin.created)
                       ? Icons.storage_rounded
                       : Icons.cloud),
                   trailing: IconButton(
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => AddDefinitionDialog().showDialog(
+                        builder: (context) => AddCardDialog().showDialog(
                           context,
-                          defn: Definition(
+                          card: model.Card(
                             id: current.id,
                             front: current.front,
                             back: current.back,
@@ -200,7 +199,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                       ).then((value) {
                         if (value != null) {
                           setState(() {
-                            definitions![index] = value;
+                            cards![index] = value;
                           });
                         }
                       });
@@ -216,13 +215,13 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
                         // this transparent color is theme independent.
                         backgroundColor: Colors.transparent,
                         contentPadding: const EdgeInsets.all(0),
-                        content: DefinitionCard(
+                        content: WordlingCard(
                           current,
                           onSerialize: (isBeingSaved) {
                             setState(() {
                               isBeingSaved
-                                  ? definitions!.add(current)
-                                  : definitions!.remove(current);
+                                  ? cards!.add(current)
+                                  : cards!.remove(current);
                             });
                           },
                         ),
@@ -254,7 +253,7 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
     );
   }
 
-  SnackBar _buildDeleteSnackBar(Definition defn) {
+  SnackBar _buildDeleteSnackBar(model.Card card) {
     return SnackBar(
       duration: const Duration(milliseconds: 1500),
       content: Padding(
@@ -262,12 +261,10 @@ class _SavedDefinitionsState extends State<SavedDefinitions> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('${defn.front} deleted.'),
+            Text('${card.front} deleted.'),
             TextButton.icon(
               onPressed: () {
-                helper
-                    .insertDefinition(defn)
-                    .then((value) => showAllDefinitions());
+                helper.insertCard(card).then((value) => showAllCards());
               },
               label: const Text('Undo'),
               icon: const Icon(Icons.undo_rounded),
